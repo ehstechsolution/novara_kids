@@ -1,0 +1,253 @@
+=============================================================
+  GUIA DE CONFIGURAÇÃO — FIREBASE NOVARA KIDS
+=============================================================
+
+Este arquivo explica como cadastrar os produtos e a configuração
+no Console do Firebase para o site funcionar.
+
+=============================================================
+  1. ACESSAR O CONSOLE
+=============================================================
+
+Acesse: https://console.firebase.google.com/
+Selecione o projeto: novara-kids
+
+=============================================================
+  2. CRIAR BANCO DE DADOS FIRESTORE
+=============================================================
+
+Se ainda não criou:
+1. Clique em "Firestore Database" no menu lateral
+2. Clique em "Criar banco de dados"
+3. Escolha "Iniciar no modo de teste" (permite leitura/escrita pública)
+4. Selecione a região mais próxima (us-central1 ou southamerica-east1)
+
+=============================================================
+  3. CONFIGURAR REGRAS DE SEGURANÇA
+=============================================================
+
+Vá em "Rules" (Regras) e cole o seguinte:
+
+  rules_version = '2';
+  service cloud.firestore {
+    match /databases/{database}/documents {
+      match /config/{doc} {
+        allow read: if true;
+        allow write: if false;
+      }
+      match /products/{doc} {
+        allow read: if true;
+        allow write: if false;
+      }
+    }
+  }
+
+Clique em "Publish" (Publicar).
+
+=============================================================
+  4. CRIAR COLLECTION: config
+=============================================================
+
+1. Clique em "Start collection"
+2. Collection ID: config
+3. Clique em "Next"
+4. Document ID: settings  (IMPORTANTE: digite "settings")
+5. Adicione os campos abaixo:
+
+  Campo          Tipo      Valor (exemplo)
+  ─────────────  ────────  ──────────────────────────────────
+  whatsapp       string    5511999999999
+  email          string    contato@novarakids.com.br
+  instagram      string    @novarakids
+  slogan         string    Kit 3D para colorir — Estimule a criatividade das crianças!
+  aboutText      string    A Novara Kids cria kits 3D personalizados para estimular a criatividade e o aprendizado das crianças de forma divertida e educativa.
+
+6. Clique em "Save"
+
+-------------------------------------------------------------
+  IMPORTANTE SOBRE O TELEFONE:
+-------------------------------------------------------------
+  O número do WhatsApp deve estar no formato internacional:
+  55 + DDD + NÚMERO (sem traços, parênteses ou espaços)
+
+  Exemplos:
+  São Paulo (11): 5511999999999
+  Rio de Janeiro (21): 5521999999999
+  Belo Horizonte (31): 5531999999999
+
+=============================================================
+  5. CRIAR COLLECTION: products
+=============================================================
+
+1. Clique em "Start collection"
+2. Collection ID: products
+3. Clique em "Next"
+4. Para CADA produto, crie um documento com os campos abaixo:
+
+  Campo          Tipo        Descrição
+  ─────────────  ──────────  ──────────────────────────────────────
+  name           string      Nome do kit (ex: "Kit Animais")
+  description    string      Descrição curta (ex: "8 peças de animais fofos para montar e colorir")
+  price          number      Preço de referência em reais (ex: 29.90)
+  images         array       Lista de URLs das imagens (ver exemplo abaixo)
+  category       string      Categoria para filtro (ex: "animais", "dinossauros", "flores")
+  active         boolean     true (visível) ou false (oculto)
+  order          number      Ordem de exibição (1 = primeiro)
+
+  ---------------------------------------------------------------
+  CAMPO "images" (ARRAY DE STRINGS):
+  ---------------------------------------------------------------
+  Cada produto pode ter 1 ou MAIS imagens. O site mostra a
+  primeira como principal e as demais como miniaturas.
+  Ao clicar na imagem, abre um lightbox para ver ampliada.
+
+  No Firebase Console, ao criar o campo "images":
+  1. Selecione "array" como tipo
+  2. Clique em "+"
+  3. Adicione cada URL como string
+  4. A primeira URL será a imagem principal
+
+  Exemplo (1 imagem apenas):
+    images: ["https://exemplo.com/foto-kit-animais.png"]
+
+  Exemplo (3 imagens):
+    images: [
+      "https://exemplo.com/kit-animais-1.png",
+      "https://exemplo.com/kit-animais-2.png",
+      "https://exemplo.com/kit-animais-3.png"
+    ]
+
+  ---------------------------------------------------------------
+  COMPATIBILIDADE:
+  ---------------------------------------------------------------
+  O site também aceita o campo antigo "imageUrl" (string única).
+  Se usar "imageUrl", o produto terá apenas 1 imagem sem
+  miniaturas. O ideal é usar o array "images".
+
+=============================================================
+  6. EXEMPLOS DE DOCUMENTOS PARA CRIAR
+=============================================================
+
+--- PRODUTO 1: Kit Animais ---
+  Document ID: kit-animais (ou deixe auto)
+  name:         Kit Animais
+  description:  8 peças de animais fofos para montar e colorir
+  price:        29.90
+  images:       ["url-foto-1.png", "url-foto-2.png"]
+  category:     animais
+  active:       true
+  order:        1
+
+--- PRODUTO 2: Kit Arca ---
+  Document ID: kit-arca
+  name:         Kit Arca
+  description:  Peças temáticas de animais da arca de Noé
+  price:        29.90
+  images:       ["url-foto-1.png"]
+  category:     arca
+  active:       true
+  order:        2
+
+--- PRODUTO 3: Kit Dinossauros ---
+  Document ID: kit-dino
+  name:         Kit Dinossauros
+  description:  Dinossauros 3D para montar e colorir
+  price:        29.90
+  images:       ["url-foto-1.png", "url-foto-2.png"]
+  category:     dinossauros
+  active:       true
+  order:        3
+
+--- PRODUTO 4: Kit Flores ---
+  Document ID: kit-flores
+  name:         Kit Flores
+  description:  Flores e plantas 3D coloridas
+  price:        29.90
+  images:       ["url-foto-1.png"]
+  category:     flores
+  active:       true
+  order:        4
+
+--- PRODUTO 5: Kit Patrulha Canina ---
+  Document ID: kit-patrulha
+  name:         Kit Patrulha Canina
+  description:  Personagens da Patrulha Canina para colorir
+  price:        34.90
+  images:       ["url-foto-1.png", "url-foto-2.png"]
+  category:     patrulha canina
+  active:       true
+  order:        5
+
+--- PRODUTO 6: Kit Princesas Disney ---
+  Document ID: kit-princesas
+  name:         Kit Princesas Disney
+  description:  Princesas Disney em 3D para montar e colorir
+  price:        34.90
+  images:       ["url-foto-1.png", "url-foto-2.png"]
+  category:     princesas
+  active:       true
+  order:        6
+
+--- PRODUTO 7: Kit Sonic ---
+  Document ID: kit-sonic
+  name:         Kit Sonic
+  description:  O Sonic e amigos em 3D para colorir
+  price:        34.90
+  images:       ["url-foto-1.png"]
+  category:     sonic
+  active:       true
+  order:        7
+
+--- PRODUTO 8: Kit Toy Story ---
+  Document ID: kit-toy-story
+  name:         Kit Toy Story
+  description:  Personagens do Toy Story em 3D para colorir
+  price:        34.90
+  images:       ["url-foto-1.png", "url-foto-2.png", "url-foto-3.png"]
+  category:     toy story
+  active:       true
+  order:        8
+
+=============================================================
+  7. DICAS SOBRE IMAGENS
+=============================================================
+
+Como você escolheu URLs externas, você pode hospedar as imagens
+em qualquer serviço gratuito:
+
+  - Imgur (https://imgur.com) — upload rápido
+  - Cloudinary (https://cloudinary.com) — melhor qualidade
+  - Google Drive (link público) — já tem as fotos lá
+
+Para usar o Google Drive:
+1. Coloque a imagem em uma pasta pública
+2. Clique com botão direito → "Compartilhar" → "Qualquer pessoa com o link"
+3. Copie o link
+4. Substitua "drive.google.com/file/d/XXXXX/view" por:
+   https://drive.google.com/uc?export=view&id=XXXXX
+
+=============================================================
+  8. TESTAR O SITE
+=============================================================
+
+Após cadastrar os produtos, abra o index.html no navegador.
+Os produtos devem aparecer automaticamente na galeria.
+
+Se não aparecerem:
+1. Abra o console do navegador (F12)
+2. Verifique se há erros de permissão
+3. Confirme que as regras estão publicadas
+4. Verifique se o ID da collection se chama "products" (minúsculo)
+
+=============================================================
+  NOTAS FINAIS
+=============================================================
+
+- O site é estático (HTML/CSS/JS puro), sem backend
+- Para hospedar grátis, use GitHub Pages ou Netlify
+- Para atualizar preços, edite os documentos no Firebase Console
+- Para adicionar novos kits, basta criar um novo documento em "products"
+- Para esconder um kit, mude "active" para false
+- Para reordenar, altere o campo "order"
+
+=============================================================
